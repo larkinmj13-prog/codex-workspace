@@ -1,0 +1,25 @@
+{
+  "signals": [
+    {
+      "ticker": "MSFT",
+      "signal": "Buy Setup",
+      "signal_quality": "A-",
+      "composite": 82,
+      "confidence": "High",
+      "risk_gate": "none",
+      "why_now": "Signal label improved and buy zone reached.",
+      "why_not": "Valuation is not cheap.",
+      "material_change": true,
+      "review_board": "pass",
+      "category_hint": "best_new_buy_setups",
+      "technical_levels_available": true,
+      "reward_risk": 2.1,
+      "min_reward_risk": 1.5,
+      "market_regime": "Green"
+    }
+  ],
+  "preferences": {
+    "max_names": 5,
+    "date": "2026-06-23"
+  }
+}

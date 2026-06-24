@@ -1,0 +1,22 @@
+{
+  "ticker": "NVDA",
+  "standalone_signal": "Buy Setup",
+  "stock_type": "high_growth_compounder",
+  "sector": "Technology",
+  "industry": "Semiconductors",
+  "market_cap_category": "mega_cap",
+  "factor_exposures": ["growth", "ai", "semiconductors"],
+  "risk_gate": "none",
+  "confidence": "High",
+  "market_regime": "Yellow",
+  "holdings": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.08,
+      "sector": "Technology",
+      "industry": "Software",
+      "role": "core",
+      "factor_exposures": ["growth", "ai"]
+    }
+  ]
+}
