@@ -1,0 +1,41 @@
+name: Read-Only Provider Validation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    env:
+      FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+      MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+      PYTHONPATH: src
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run tests
+        run: |
+          python -m pytest
+          ruff check .
+
+      - name: Read-only stock card validation
+        run: |
+          if [ -z "$FMP_API_KEY" ] || [ -z "$MASSIVE_API_KEY" ]; then
+            echo "Provider validation skipped because FMP_API_KEY or MASSIVE_API_KEY is not configured."
+            exit 0
+          fi
+          python -m stockgod stock-card MSFT --live --no-macro
+          python -m stockgod stock-card SPY --live --no-macro
