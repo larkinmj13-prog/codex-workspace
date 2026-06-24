@@ -4,23 +4,29 @@ from __future__ import annotations
 
 from typing import Any
 
+from stockgod.data.errors import ProviderError
 from stockgod.data.fmp import FMPClient
 from stockgod.data.fred import FREDClient
 from stockgod.data.massive import MassiveClient
 
 
+def _labeled(source: str, call):
+    """Run a provider call, prefixing any provider error with its source for diagnosis."""
+    try:
+        return call()
+    except ProviderError as exc:
+        raise type(exc)(f"{source}: {exc}") from exc
+
+
 def fetch_live_stock_card_inputs(ticker: str, include_macro: bool = True) -> dict[str, Any]:
     """Fetch read-only provider envelopes for the first live stock card."""
     symbol = ticker.upper()
-    payload: dict[str, Any] = {
-        "ticker": symbol,
-        "data_mode": "live_read_only",
-        "profile": FMPClient().get_company_profile(symbol),
-        "earnings": FMPClient().get_earnings_calendar(symbol),
-        "daily_bars": MassiveClient().get_daily_bars(symbol),
-    }
+    payload: dict[str, Any] = {"ticker": symbol, "data_mode": "live_read_only"}
+    payload["profile"] = _labeled("FMP profile", lambda: FMPClient().get_company_profile(symbol))
+    payload["earnings"] = _labeled("FMP earnings", lambda: FMPClient().get_earnings_calendar(symbol))
+    payload["daily_bars"] = _labeled("Massive daily bars", lambda: MassiveClient().get_daily_bars(symbol))
     if include_macro:
-        payload["macro"] = FREDClient().get_series("DGS10")
+        payload["macro"] = _labeled("FRED macro", lambda: FREDClient().get_series("DGS10"))
     return payload
 
 

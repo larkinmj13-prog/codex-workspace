@@ -50,13 +50,16 @@ class MassiveClient:
         today = datetime.now(UTC).date()
         frm = start or (today - timedelta(days=10)).isoformat()
         to = end or today.isoformat()
-        params = {"apiKey": self.config.massive_api_key, "adjusted": "true", "sort": "asc", "limit": 50}
+        params = {"adjusted": "true", "sort": "asc", "limit": 50}
         url = f"{self.base_url}/v2/aggs/ticker/{ticker.upper()}/range/1/day/{frm}/{to}"
-        raw = request_json(self.session, url, params)
+        raw = request_json(self.session, url, params, self._auth_headers())
         return normalize_massive_daily_bars(raw, ticker)
 
     def get_quote_snapshot(self, ticker: str) -> dict:
         if not self.config.massive_api_key:
             raise MissingApiKeyError("MASSIVE_API_KEY is required for Massive requests")
-        raw = request_json(self.session, f"{self.base_url}/v2/snapshot/locale/us/markets/stocks/tickers/{ticker.upper()}", {"apiKey": self.config.massive_api_key})
+        raw = request_json(self.session, f"{self.base_url}/v2/snapshot/locale/us/markets/stocks/tickers/{ticker.upper()}", headers=self._auth_headers())
         return normalize_massive_quote_snapshot(raw, ticker)
+
+    def _auth_headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self.config.massive_api_key}"}
