@@ -1,0 +1,15 @@
+{
+  "ticker": "NVDA",
+  "journal_entry": {
+    "id": "fixture-entry",
+    "ticker": "NVDA",
+    "date": "2026-06-01T00:00:00+00:00",
+    "signal": "Buy Setup",
+    "stock_type": "high_growth_compounder",
+    "data_quality": "fresh"
+  },
+  "days_elapsed": 30,
+  "invalidation_triggered": true,
+  "risk_controls_worked": true,
+  "major_changes": ["Price closed below invalidation."]
+}

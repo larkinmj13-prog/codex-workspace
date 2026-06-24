@@ -1,0 +1,43 @@
+{
+  "ticker": "MSFT",
+  "data_mode": "fixture_read_only",
+  "profile": {
+    "provider": "fmp",
+    "symbol": "MSFT",
+    "as_of": "2026-06-23",
+    "data": {
+      "symbol": "MSFT",
+      "company_name": "Microsoft Corporation",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 3000000000000
+    },
+    "raw": {}
+  },
+  "daily_bars": {
+    "provider": "massive",
+    "symbol": "MSFT",
+    "as_of": "2026-06-23",
+    "data": {
+      "symbol": "MSFT",
+      "bars": [
+        {"date": "2026-06-23", "open": 448.0, "high": 452.0, "low": 447.5, "close": 450.12, "volume": 22000000}
+      ]
+    },
+    "raw": {}
+  },
+  "earnings": {
+    "provider": "fmp",
+    "symbol": "MSFT",
+    "as_of": "2026-07-28",
+    "data": {"symbol": "MSFT", "date": "2026-07-28", "eps_estimated": 3.2, "eps_actual": null},
+    "raw": {}
+  },
+  "macro": {
+    "provider": "fred",
+    "series_id": "DGS10",
+    "as_of": "2026-06-23",
+    "data": {"series_id": "DGS10", "observations": [{"date": "2026-06-23", "value": "4.27"}]},
+    "raw": {}
+  }
+}

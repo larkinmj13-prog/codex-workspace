@@ -1,0 +1,20 @@
+[
+  {
+    "id": "nvda-entry",
+    "ticker": "NVDA",
+    "date": "2026-06-01T00:00:00+00:00",
+    "signal": "Buy Setup",
+    "best_action": "buy",
+    "status": "open",
+    "source": "manual"
+  },
+  {
+    "id": "msft-entry",
+    "ticker": "MSFT",
+    "date": "2026-06-01T00:00:00+00:00",
+    "signal": "Hold",
+    "best_action": "hold",
+    "status": "closed",
+    "source": "manual"
+  }
+]
