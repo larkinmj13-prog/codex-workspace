@@ -23,7 +23,7 @@ def normalize_fmp_company_profile(raw: dict | list, ticker: str) -> dict:
     item = _first(raw)
     if not item:
         raise ProviderResponseError("FMP company profile response is empty")
-    data = {"symbol": item.get("symbol", ticker).upper(), "company_name": item.get("companyName"), "sector": item.get("sector"), "industry": item.get("industry"), "market_cap": item.get("mktCap")}
+    data = {"symbol": item.get("symbol", ticker).upper(), "company_name": item.get("companyName"), "sector": item.get("sector"), "industry": item.get("industry"), "market_cap": item.get("marketCap") or item.get("mktCap")}
     return _envelope(ticker, data, raw, item.get("date"))
 
 
@@ -47,41 +47,41 @@ def normalize_fmp_earnings_calendar(raw: dict | list, ticker: str) -> dict:
     item = _first(raw)
     if not item:
         raise ProviderResponseError("FMP earnings calendar response is empty")
-    data = {"symbol": item.get("symbol", ticker).upper(), "date": item.get("date"), "eps_estimated": item.get("epsEstimated"), "eps_actual": item.get("eps")}
+    data = {"symbol": item.get("symbol", ticker).upper(), "date": item.get("date"), "eps_estimated": item.get("epsEstimated"), "eps_actual": item.get("epsActual") or item.get("eps")}
     return _envelope(ticker, data, raw, item.get("date"))
 
 
 class FMPClient:
     provider = "fmp"
 
-    def __init__(self, config: ProviderConfig | None = None, session: Any | None = None, base_url: str = "https://financialmodelingprep.com/api/v3") -> None:
+    def __init__(self, config: ProviderConfig | None = None, session: Any | None = None, base_url: str = "https://financialmodelingprep.com/stable") -> None:
         self.config = config or load_provider_config()
         self.session = session or UrlLibSession()
         self.base_url = base_url.rstrip("/")
 
     def get_company_profile(self, ticker: str) -> dict:
-        return normalize_fmp_company_profile(self._request(f"profile/{ticker}"), ticker)
+        return normalize_fmp_company_profile(self._request("profile", {"symbol": ticker}), ticker)
 
     def get_key_metrics(self, ticker: str) -> dict:
-        return normalize_fmp_key_metrics(self._request(f"key-metrics-ttm/{ticker}"), ticker)
+        return normalize_fmp_key_metrics(self._request("key-metrics-ttm", {"symbol": ticker}), ticker)
 
     def get_financial_ratios(self, ticker: str) -> dict:
-        return normalize_fmp_financial_ratios(self._request(f"ratios-ttm/{ticker}"), ticker)
+        return normalize_fmp_financial_ratios(self._request("ratios-ttm", {"symbol": ticker}), ticker)
 
     def get_income_statement(self, ticker: str) -> dict:
-        return self._get(ticker, f"income-statement/{ticker}")
+        return self._get(ticker, "income-statement", {"symbol": ticker})
 
     def get_balance_sheet(self, ticker: str) -> dict:
-        return self._get(ticker, f"balance-sheet-statement/{ticker}")
+        return self._get(ticker, "balance-sheet-statement", {"symbol": ticker})
 
     def get_cash_flow(self, ticker: str) -> dict:
-        return self._get(ticker, f"cash-flow-statement/{ticker}")
+        return self._get(ticker, "cash-flow-statement", {"symbol": ticker})
 
     def get_earnings_calendar(self, ticker: str) -> dict:
-        return normalize_fmp_earnings_calendar(self._request("historical/earning_calendar", {"symbol": ticker}), ticker)
+        return normalize_fmp_earnings_calendar(self._request("earnings", {"symbol": ticker}), ticker)
 
     def get_insider_discovery(self, ticker: str) -> dict:
-        return self._get(ticker, "insider-trading", {"symbol": ticker})
+        return self._get(ticker, "insider-trading/search", {"symbol": ticker})
 
     def _request(self, path: str, params: dict[str, Any] | None = None) -> Any:
         if not self.config.fmp_api_key:

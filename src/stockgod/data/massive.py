@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from stockgod.data._http import UrlLibSession, request_json, utc_now
@@ -47,12 +47,12 @@ class MassiveClient:
     def get_daily_bars(self, ticker: str, start: str | None = None, end: str | None = None) -> dict:
         if not self.config.massive_api_key:
             raise MissingApiKeyError("MASSIVE_API_KEY is required for Massive requests")
-        params = {"apiKey": self.config.massive_api_key}
-        if start:
-            params["start"] = start
-        if end:
-            params["end"] = end
-        raw = request_json(self.session, f"{self.base_url}/v2/aggs/ticker/{ticker.upper()}/range/1/day", params)
+        today = datetime.now(UTC).date()
+        frm = start or (today - timedelta(days=10)).isoformat()
+        to = end or today.isoformat()
+        params = {"apiKey": self.config.massive_api_key, "adjusted": "true", "sort": "asc", "limit": 50}
+        url = f"{self.base_url}/v2/aggs/ticker/{ticker.upper()}/range/1/day/{frm}/{to}"
+        raw = request_json(self.session, url, params)
         return normalize_massive_daily_bars(raw, ticker)
 
     def get_quote_snapshot(self, ticker: str) -> dict:
