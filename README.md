@@ -47,7 +47,15 @@ python -m stockgod provider-check massive --ticker SPY
 python -m stockgod provider-check edgar --ticker MSFT
 python -m stockgod provider-check fred --series DGS10
 python -m stockgod provider-check yahoo --ticker MSFT
+python -m stockgod build-input TICKER --input PATH
+python -m stockgod build-input TICKER --live --no-macro
+python -m stockgod analyze TICKER --input PATH
+python -m stockgod analyze TICKER --live --no-macro
+python -m stockgod watchlist-digest --input PATH
+python -m stockgod watchlist-digest --tickers MSFT,SPY --live --no-macro
 ```
+
+The `build-input` / `analyze` / `watchlist-digest` commands are the provider-evidence MVP — a fact-only, read-only layer over the deterministic engine (no scores, ratings, technical levels, or buy/sell). See [docs/PROVIDER_EVIDENCE.md](docs/PROVIDER_EVIDENCE.md).
 
 ## Current Limitation
 
